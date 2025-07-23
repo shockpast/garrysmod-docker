@@ -1,7 +1,7 @@
 # BASE IMAGE
 FROM debian:buster-slim
 
-LABEL maintainer="ceifa"
+LABEL maintainer="shockpast"
 LABEL description="A structured Garry's Mod dedicated server under a debian linux image"
 
 ENV DEBIAN_FRONTEND noninteractive
@@ -27,22 +27,11 @@ RUN wget -P /home/gmod/steamcmd/ https://steamcdn-a.akamaihd.net/client/installe
 COPY assets/update.txt /home/gmod/update.txt
 RUN /home/gmod/steamcmd/steamcmd.sh +runscript /home/gmod/update.txt +quit
 
-# SETUP CSS CONTENT
-RUN /home/gmod/steamcmd/steamcmd.sh +login anonymous \
-    +force_install_dir /home/gmod/temp \
-    +app_update 232330 validate \
-    +quit
-RUN mkdir /home/gmod/mounts && mv /home/gmod/temp/cstrike /home/gmod/mounts/cstrike
-RUN rm -rf /home/gmod/temp
-
 # SETUP BINARIES FOR x32 and x64 bits
 RUN mkdir -p /home/gmod/.steam/sdk32 \
     && cp -v /home/gmod/steamcmd/linux32/steamclient.so /home/gmod/.steam/sdk32/steamclient.so \
     && mkdir -p /home/gmod/.steam/sdk64 \
     && cp -v /home/gmod/steamcmd/linux64/steamclient.so /home/gmod/.steam/sdk64/steamclient.so
-
-# SET GMOD MOUNT CONTENT
-RUN echo '"mountcfg" {"cstrike" "/home/gmod/mounts/cstrike"}' > /home/gmod/server/garrysmod/cfg/mount.cfg
 
 # CREATE DATABASE FILE
 RUN touch /home/gmod/server/garrysmod/sv.db

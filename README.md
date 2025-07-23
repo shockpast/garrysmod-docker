@@ -1,5 +1,8 @@
 [![Garry's mod containers](https://i.imgur.com/QEGv6GM.png "Garry's mod containers")][docker-hub-repo]
 
+> [!NOTE]
+> It's fork of ceifa's docker images, but with some additions?...
+
 # Garry's Mod server
 Run a Garry's Mod server easily inside a docker container
 
@@ -10,14 +13,14 @@ Run a Garry's Mod server easily inside a docker container
 * `debian-root` - same as `debian` but executed as root user
 * `debian-x64-root` - same as `debian-x64` but executed as root user
 * `debian-post` - same as `debian` but the server is installed with the container starting
-* `ubuntu` - a gmod server based on ubuntu
+* `ubuntu` - a gmod server based on ubuntu, versioned as `18.04`
+* `ubuntu-latest` - a gmod server based on latest ubuntu, versioned as `24.04`
 
 ## Features
 
 * Run a server under a linux non-root user
 * Run a server under an anonymous steam user
 * Run server commands normally
-* Installed CSS content
 * Check and update server automatically
 * Production and development build
 
@@ -70,8 +73,6 @@ It's not the full directory tree, I just put the ones I thought most important
 ```cs
 📦 /home/gmod // The server root
 |__📁steamcmd // Steam cmd, used to update the server when needed
-|__📁mounts // All third party games should be installed here
-|  |  |__📁cstrike // Counter strike: Source comes installed as default
 |__📁server
 |  |__📁garrysmod
 |  |  |__📁addons // Put your addons here
@@ -97,7 +98,7 @@ docker run \
     -p 27005:27005/udp \
     --name gmod-server \
     -it \
-    ceifa/garrysmod:latest
+    shockpast/garrysmod:latest
 ```
 
 This will start a server with host workshop collection pointing to [382793424][workshop-example] named `gmod-server`:
@@ -108,7 +109,7 @@ docker run \
     -p 27005:27005/udp \
     -e ARGS="+host_workshop_collection 382793424" \
     -it \
-    ceifa/garrysmod:latest
+    shockpast/garrysmod:latest
 ```
 
 This will start a server named `my server` in production mode pointing to a local addons with a custom gamemode:
@@ -123,21 +124,51 @@ docker run \
     -e PRODUCTION=1 \
     -e GAMEMODE=darkrp \
     -it \
-    ceifa/garrysmod:latest
+    shockpast/garrysmod:latest
 ```
 
 You can create a new docker image using this image as base too:
 
 ```dockerfile
-FROM ceifa/garrysmod:latest
+FROM shockpast/garrysmod:latest
 
-COPY ./deathrun-addons /home/gmod/server/garrysmod/addons
+COPY ./addons /home/gmod/server/garrysmod/addons
 
-ENV NAME="Lory | Deathrun ~ Have fun!"
-ENV ARGS="+host_workshop_collection 382793424"
-ENV MAP="deathrun_atomic_warfare"
-ENV GAMEMODE="deathrun"
-ENV MAXPLAYERS="24"
+ENV NAME="My Garry's Mod Server"
+ENV ARGS="+host_workshop_collection 1234567890"
+ENV MAP="gm_construct"
+ENV GAMEMODE="sandbox"
+ENV MAXPLAYERS="32"
+```
+
+You can also use it inside docker compose:
+
+```yml
+services:
+    gmod:
+        image: shockpast/garrysmod:latest
+        container_name: gmod
+        restart: unless-stopped
+        ports:
+            - 27015:27015/udp
+            - 27005:27005/udp
+            - 27015:27015
+        volumes:
+            - ./addons:/home/gmod/server/garrysmod/addons
+            - ./data:/home/gmod/server/garrysmod/data
+
+            - ./sv.db:/home/gmod/server/garrysmod/sv.db
+            - ./cfg/server.cfg:/home/gmod/server/garrysmod/cfg/server.cfg
+
+            - gmod_steam_cache:/home/gmod/server/steam_cache
+            - gmod_server_cache:/home/gmod/server/garrysmod/cache
+        env_file: .env   # all configurations are stored inside .env file
+        stdin_open: true # stdin_open and tty are required
+        tty: true
+
+volumes:
+  gmod_steam_cache: # for workshop
+  gmod_server_cache: # for workshop
 ```
 
 More examples can be found at [my real use case github repository][lory-repo].
@@ -160,18 +191,14 @@ healthy
 
 ## License
 
-This image is under the [MIT license](licence).
+This image is under the [MIT license](license).
 
 ## TODO:
 
 * Add multi-stages to build
 
-[docker-hub-repo]: https://hub.docker.com/r/ceifa/garrysmod "Docker hub repository"
+[docker-hub-repo]: https://hub.docker.com/r/shockpast/garrysmod "Docker hub repository"
 
 [srcds-connectivity]: https://developer.valvesoftware.com/wiki/Source_Dedicated_Server#Connectivity "Valve srcds connectivity documentation"
 
-[workshop-example]: https://steamcommunity.com/sharedfiles/filedetails/?id=382793424 "Steam workshop collection"
-
-[lory-repo]: https://github.com/ceifa/lory-gmod-servers "Lory server repository"
-
-[licence]: https://github.com/ceifa/garrysmod-docker/blob/master/LICENSE "Licence of use"
+[license]: https://github.com/ceifa/garrysmod-docker/blob/master/LICENSE "License of use"

@@ -1,7 +1,7 @@
 # BASE IMAGE
 FROM debian:buster-slim
 
-LABEL maintainer="ceifa"
+LABEL maintainer="shockpast"
 LABEL description="A structured Garry's Mod dedicated server under a debian linux image"
 
 ENV DEBIAN_FRONTEND noninteractive
@@ -24,14 +24,6 @@ RUN wget -P /home/gmod/steamcmd/ https://steamcdn-a.akamaihd.net/client/installe
     && rm -rf /home/gmod/steamcmd/steamcmd_linux.tar.gz
 
 COPY assets/update.txt /home/gmod/update.txt
-
-# SETUP CSS CONTENT
-RUN /home/gmod/steamcmd/steamcmd.sh +login anonymous \
-    +force_install_dir /home/gmod/temp \
-    +app_update 232330 validate \
-    +quit
-RUN mkdir /home/gmod/mounts && mv /home/gmod/temp/cstrike /home/gmod/mounts/cstrike
-RUN rm -rf /home/gmod/temp
 
 # SETUP BINARIES FOR x32 and x64 bits
 RUN mkdir -p /home/gmod/.steam/sdk32 \
