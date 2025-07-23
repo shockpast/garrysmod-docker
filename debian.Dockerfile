@@ -1,5 +1,5 @@
 # BASE IMAGE
-FROM debian:buster-slim
+FROM debian:bookworm-slim
 
 LABEL maintainer="shockpast"
 LABEL description="A structured Garry's Mod dedicated server under a debian linux image"
