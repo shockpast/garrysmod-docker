@@ -4,13 +4,7 @@ on:
   push:
     branches: [ master ]
   schedule:
-    - cron: 0 0 1 * *  
-  workflow_dispatch:
-    inputs:
-      dockerfile:
-          description: 'Docker file to build'
-          default: ''
-          type: string
+    - cron: 0 0 1 * *
 
 jobs:
   build:
