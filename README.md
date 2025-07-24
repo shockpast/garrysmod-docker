@@ -8,13 +8,9 @@ Run a Garry's Mod server easily inside a docker container
 
 ## Supported tags
 * `latest` - the most recent production-ready image, based on `debian`
-* `debian` - a gmod server based on debian
-* `debian-x64` - (NOT STABLE YET) a gmod server based on debian but running on beta version of srcds for x64 bit CPUs
-* `debian-root` - same as `debian` but executed as root user
-* `debian-x64-root` - same as `debian-x64` but executed as root user
-* `debian-post` - same as `debian` but the server is installed with the container starting
-* `ubuntu` - a gmod server based on ubuntu, versioned as `18.04`
-* `ubuntu-latest` - a gmod server based on latest ubuntu, versioned as `24.04`
+* `debian` - a gmod server based on Debian 12
+* `ubuntu` - a gmod server based on Ubuntu 24.04
+* `almalinux` - a gmod server based on AlmaLinux 9
 
 ## Features
 
