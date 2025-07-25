@@ -1,5 +1,10 @@
 #!/bin/bash
 
+if [ ! -f /home/gmod/server/srcds_run ];
+then
+    /home/gmod/steamcmd/steamcmd.sh +runscript /home/gmod/update.txt +quit
+fi
+
 if [ -n "${NAME}" ];
 then
     ARGS="+hostname \"${NAME}\" ${ARGS}"
